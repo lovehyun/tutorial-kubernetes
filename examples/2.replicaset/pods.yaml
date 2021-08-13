@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod1
+  labels:
+    tier: tomcat
+spec:
+  containers:
+  - name: tomcat1
+    image: tomcat
+ 
+---
+ 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod2
+  labels:
+    tier: tomcat
+spec:
+  containers:
+  - name: tomcat2
+    image: tomcat

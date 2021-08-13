@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql
+spec:
+  containers:
+  - name: mysql-container
+    image: mysql:5.6
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      value: qwe123
+    ports:
+    - containerPort: 3306
+

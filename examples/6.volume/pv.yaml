@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: PersistentVolume      # PV 를 생성함을 명시
+metadata:
+  name: pv-hostpath
+  labels:
+    storage: pv-test
+spec:
+  capacity:                 # PV 설정
+storage: 5Gi               # storage : 용량을 지정 (Mi: 메가, Gi : 기가, Ti: 테라)
+accessModes:              # accessModes : volume의 읽기/쓰기에 관한 옵션을 지정, volume은 한번에 하나의 accessModes만 설정 가능
+    - ReadWriteOnce         # - ReadWriteOnce : 하나의 pod에만 mount 가능, volume 읽기/쓰기 가능
+                            # - ReadOnlyOnce  : 다수의 Pod에 mount 가능, 여러개의 pod에서 동시에 volume 읽기 가능, 쓰기 못함
+                            # - ReadWriteMany : 다수의 Pod에 mount 가능, 여러개의 pod에서 동시에 volume 읽기,쓰기 가능
+                            # 해당 옵션은 volume 종류에 따라 설정할 수 있고/없음이 결정됨
+volumeMode: Filesystem    # volumeMode : Kubernetes 1.8버전에 알파 기능으로 추가된 옵션.
+                            # - filesystem : default 옵션으로 volume을 일반 파일시스템형식으로 붙여서 사용하게 합
+                            # - raw        : valume을 RAW 파일시스템형식으로 붙여서 사용하게 함
+                            # - block      : Filesysetm이 없는 Block 장치와 연결될 때는 Block으로 설정
+storageClassName: my-storage
+                            # storageClassName : 아래에서 설명할 Dynamic Provisioning 방식에 사용하는 옵션(예제에서는 설명을 하기 위해 추가함).
+                            #                    storage의 Name을 명시함 특정 StorageClass 가진 PV는 
+                            #                    그 스토리지 클래스에 맞는 PVC하고만 연결됨 
+                            #                    PV에 storageClassName이 없으면 storageClassName이 없는 PVC에만 연결
+persistentVolumeReclaimPolicy: Delete 
+                            # persistentVolumeReclaimPolicy:  PV 생명주기 중 Reclaim에 해당
+                            #- Delete : 볼륨 사용이 종료되면 실제 디스크내용도 삭제, 스토리지를 할당 받은 경우 할당받은 공간도 해제
+                            #- Recycle: 볼륨 사용이 종료되면 실제 디스크내용도 삭제, 스토리지를 할당 받은 경우 할당받은 공간은 유지 
+                            #- Retain : 볼륨 사용이 중지되도 유지함, PVC를 삭제해도 PV유지, 실제 디스크내용은 지워지지 않음
+                            # (아래의 PV와 PVC의 LifeCycle 항목에서 자세히 설명함)
+hostPath:                 # hostPath:PV Type 을 설정하는 부분 hostname은 노드에 저장되는 실제 저장 공간 설정하는 방법.
+    path: /volumeK8s        #           해당 예제에서는 hostPath로 생성(로컬 디스크 사용)
+                            #           hostpath이외에 상위 1.1 volume의 종류에 명시되어있는 
+                            #           다양한 종류의 저장공간을 설정해서 사용할 수 있음
+

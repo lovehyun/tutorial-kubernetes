@@ -1,0 +1,7 @@
+# 각각 pod 실행하고... mysql 에서 tomcat 접속 시도
+kubectl get pods -o wide
+
+kubectl exec -it mysql-pod -- /bin/bash
+curl 10.244.2.5:8080
+
+

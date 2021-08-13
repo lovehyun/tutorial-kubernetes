@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod-tomcat
+  labels:
+    app: tomcat8
+spec:
+  containers:
+  - name: my-cont-tomcat
+    image: tomcat:jdk8-openjdk
+    ports:
+    - containerPort: 8080
+# nodeSelector:
+#   kubernetes.io/hostname: k8s-worker1
