@@ -99,7 +99,84 @@
 - 호스트 포트 포워딩
   - ` kubectl port-forward hello-minikube-64b64df8c9-4rpfp 8080:8080 `
 
-### 메뉴얼 (한글)
+### 헬로 노드JS #1
+- 컨테이너 pod 형태로 배포 및 서비스 확인
+  ```bash
+  > kubectl run nodejs --image=lovehyun/node-web --port=8080 
+  pod/nodejs created
+  
+  > kubectl get pods
+  NAME           READY   STATUS    RESTARTS   AGE
+  nodejs         1/1     Running   0          24s
+  
+  > kubectl logs nodejs
+  Server starting... at nodejs
+  
+  > kubectl exec nodejs -- curl 127.0.0.1:8080 --silent
+  Welcome to nodejs
+  
+  > kubectl expose pod/nodejs --type=NodePort --name nodejs-http
+  service/nodejs exposed
+  
+  > kubectl get svc
+  nodejs-http   NodePort    10.103.4.59   <none>        8080:32681/TCP   4s
+  
+  > curl 192.168.49.2:32681
+  Welcome to nodejs
+  ```
+
+### 헬로 노드JS #2
+- 컨테이너 deployment 형태로 배포 및 서비스 확인
+  ```bash
+  > kubectl create deployment nodejs --image=lovehyun/node-web --port=8080 
+  deployment.apps/nodejs created
+
+  > kubectl get deployments
+  NAME           READY   UP-TO-DATE    AVAILABLE   AGE
+  nodejs         1/1     1             1           7s
+
+  > kubectl get replicasets
+  NAME		           DESIRED	CURRENT		READY	  AGE
+  nodejs-775cf96dc5  1		    1		      1	      59s
+
+  > kubectl get pods
+  NAME           		      READY   STATUS    RESTARTS   AGE
+  nodejs-775cf96dc5-6qp5k 1/1     Running   0          2m30s
+
+  > kubectl scale deployment/nodejs --replicas=2
+  deployment.apps/nodejs scaled
+  
+  > kubectl get replicasets
+  NAME 		            DESIRED	CURRENT		READY	  AGE
+  nodejs-775cf96dc5   2	   	  2         2	      4m9s
+  
+  > kubectl get pods
+  NAME           		      READY	  STATUS    RESTARTS    AGE
+  nodejs-775cf96dc5-6qp5k 1/1	    Running	  0           4m13s
+  nodejs-775cf96dc5-f6nwl	1/1	    Running	  0	          14s
+
+  > kubectl expose deployment/nodejs --type=NodePort --name nodejs-http
+  service/nodejs-http exposed
+
+  > kubectl get svc
+  NAME		TYPE	   CLUSTER-IP	 EXTERNAL-IP	PORT(S)		AGE
+  nodejs-http	NodePort   10.97.135.189  <none>         8080:30518/TCP   4s
+
+  > kubectl get nodes -o wide
+  NAME        STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+  minikube    Ready    control-plane,master   5d    v1.21.2   192.168.49.2   <none>        Ubuntu 20.04.2 LTS   5.11.0-25-generic   docker://20.10.7
+
+  > minikube service nodejs-http --url
+  http://192.168.49.2:30518
+
+  > curl 192.168.49.2:30518
+  Welcome to nodejs-775cf96dc5-6qp5k
+  
+  > curl 192.168.49.2:30518
+  Welcome to nodejs-775cf96dc5-f6nwl
+  ```
+
+## 메뉴얼 (한글)
 - https://kubernetes.io/ko/docs/home/
 
 # 강의자료 소개
