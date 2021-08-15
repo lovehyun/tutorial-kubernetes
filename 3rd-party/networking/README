@@ -1,0 +1,22 @@
+# Flannel 설치
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# Flannel 삭제
+kubectl delete -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+
+# 삭제 후 적용되려면 모든 노드의 docker 를 재시작
+service docker restart
+
+
+# 다른 네트워킹 설치
+# Canal = Flannel + Calico
+
+curl https://docs.projectcalico.org/manifests/canal.yaml -O
+
+kubectl apply -f canal.yaml
+
+
+# 설치 확인
+kubectl get all -n kube-system
+

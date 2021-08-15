@@ -1,0 +1,24 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+   name: neo4j-sa-role
+
+rules:
+ - apiGroups: ["", "extensions", "apps"]
+   resources: ["services", "pods", "replicasets", "deployments", "daemonsets"]
+   verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+   name: neo4j-sa-rolebinding
+subjects:
+ - kind: ServiceAccount
+   name: neo4j-sa
+   namespace: default
+roleRef:
+   kind: ClusterRole
+   name: neo4j-sa-role
+   apiGroup: rbac.authorization.k8s.io
+

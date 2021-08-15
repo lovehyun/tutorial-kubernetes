@@ -1,0 +1,12 @@
+# Metrics 서버
+https://github.com/kubernetes-sigs/metrics-server
+wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.7/components.yaml
+
+# 위 components.yaml 파일 내에 인증서 관련 부분 수정
+args 필드 아래
+ - certs-dir=/tmp
+ - secure-port=4443
+
+ - --kubelet-insecure-tls
+ - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+
