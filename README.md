@@ -72,14 +72,57 @@
     ```
 
 ## kubectl 사용법 (명령어)
- - https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/
+- https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/
+
+### kubectl 명령어 (기초)
+- 명령어(command) 유형
+  - 정보 조회 : ` kubectl get `
+  - 생성 : ` kubectl create `
+  - 생성(pod) : ` kubectl run `
+  - 생성(service) : ` kubectl expose `
+  - 로그 : ` kubectl logs `
+  - 삭제 : ` kubectl delete `
+- 컨트롤러 유형
+  - 파드(pod) : ` pods = po `
+    - ` kubectl get pods `
+    - ` kubectl get po `
+  - 리플리카셋(replicaset) : ` replicatsets = rs `
+    - ` kubectl get replicasets `
+    - ` kubectl get rs `
+  - 디플로이먼트(deployment) : ` deployment = deploy `
+    - ` kubectl get deployments `
+    - ` kubectl get deploy `
+- 서비스 유형
+  - 서비스(service) : ` service = svc `
+    - ` kubectl get services `
+    - ` kubectl get svc `
+- 네임스페이스
+  - 네임스페이스(namespace) : ` namespace = ns `
+
+### kubectl 명령어 (일반)
+- 컨트롤러 유형
+  - 스테이트풀셋(statefulset) : ` statefulset = sts `
+  - 데몬셋(daemonset) : ` daemonset = ds `
+  - 잡(job) : ` job `
+  - 크론(cronjab) : ` cronjob `
+- 서비스 유형
+  - 엔드포인트(endpoint) : ` endpoint = ep `
+  - 인그레스(ingress) : ` ingress `
+- 볼륨 유형
+  - 볼륨(persistentvolume) : ` persistentvolume = pv `
+  - 볼륨요청(persistentvolumeclaim) : `pesistentvolumeclaim = pvc `
+  - 스토리지(storageclass) : ` storageclass `
+- 설정
+  - 설정(configmap) : ` configmap = cm `
+  - 시크릿(secret) : ` secret `
+
 
 ### 쿠버네티스 환경 기본 확인
-  - 클러스터 확인
-    - ` kubectl cluster-info `
-  - 설정 확인 (멀티 클러스터 사용 시)
-    - ` kubectl config view `
-    - https://kubernetes.io/ko/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+- 클러스터 확인
+  - ` kubectl cluster-info `
+- 설정 확인 (멀티 클러스터 사용 시)
+  - ` kubectl config view `
+  - https://kubernetes.io/ko/docs/concepts/configuration/organize-cluster-access-kubeconfig/
 
 ## 쿠버네티스 설정
 ### 헬로월드
@@ -120,7 +163,10 @@
   
   > kubectl get svc
   nodejs-http   NodePort    10.103.4.59   <none>        8080:32681/TCP   4s
-  
+
+  > minikube service nodejs-http --url
+  http://192.168.49.2:32681
+
   > curl 192.168.49.2:32681
   Welcome to nodejs
   ```
