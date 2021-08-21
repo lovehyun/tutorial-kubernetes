@@ -49,18 +49,16 @@
 - 공식 사이트
   - https://kubernetes.io/ko/docs/tasks/tools/install-kubectl-linux/
 - 패키지 관리자를 통한 설치
-  - ```bash
-    1. apt 패키지 색인을 업데이트하고 쿠버네티스 apt 리포지터리를 사용하는 데 필요한 패키지들을 설치한다.
-      - ` sudo apt-get update `
-      - ` sudo apt-get install -y apt-transport-https ca-certificates curl `
-    2. 구글 클라우드 공개 사이닝 키를 다운로드한다.
-      - ` sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg `
-    3. 쿠버네티스 apt 리포지터리를 추가한다.
-      - ` echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list `
-    4. 새 리포지터리의 apt 패키지 색인을 업데이트하고 kubectl을 설치한다.
-      - ` sudo apt-get update `
-      - ` sudo apt-get install -y kubectl `
-    ```
+  1. apt 패키지 색인을 업데이트하고 쿠버네티스 apt 리포지터리를 사용하는 데 필요한 패키지들을 설치한다.
+    - ` sudo apt-get update `
+    - ` sudo apt-get install -y apt-transport-https ca-certificates curl `
+  2. 구글 클라우드 공개 사이닝 키를 다운로드한다.
+    - ` sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg `
+  3. 쿠버네티스 apt 리포지터리를 추가한다.
+    - ` echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list `
+  4. 새 리포지터리의 apt 패키지 색인을 업데이트하고 kubectl을 설치한다.
+    - ` sudo apt-get update `
+    - ` sudo apt-get install -y kubectl `
 
 ### 수동설치 (바이너리)
 - 설칯 명령어
@@ -98,6 +96,8 @@
     - ` kubectl get svc `
 - 네임스페이스
   - 네임스페이스(namespace) : ` namespace = ns `
+- 다수의 서비스 조회
+  - ` kubectl get deploy,rc,pods `
 
 ### kubectl 명령어 (일반)
 - 컨트롤러 유형
@@ -225,27 +225,161 @@
 ## 메뉴얼 (한글)
 - https://kubernetes.io/ko/docs/home/
 
+## kubectl 설정 및 환경변수
+### kubeconfig 환경 변수
+- kubeconfig 란?
+  - ` $HOME/.kube/config ` 파일을 통해 클러스터, 인증, 컨텍스트 정보 확인
+- 클러스터 내 사용 가능한 자원의 목록
+  - ` kubectl api-resources `
+- 접속 가능한 컨텍스트 정보 확인
+  - ` kubectl config get-contexts `
+  - ```bash
+    CURRENT   NAME       CLUSTER    AUTHINFO   NAMESPACE
+    *         minikube   minikube   minikube   default
+    ```
+- 원하는 컨텍스트로 변경
+  - ` kubectl config use-context minikube `
+  - ` kubectl config current-context `
+  - ` kubectl config set-context minikube --namespace=my-namespace `
+- 현재 컨텍스트 보기
+  - ` kubectl config view `
+- K8s 클라우드 서비스 접속하기
+  - Amazon EKS (AWS K8s 서비스) 접속하기 : https://docs.aws.amazon.com/ko_kr/eks/latest/userguide/create-kubeconfig.html
+  - Google GKE (GCP K8s 서비스) 접속하기 : https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl
+  - Azure AKS (Azure K8s 서비스) 접속하기 : https://docs.microsoft.com/ko-kr/azure/aks/control-kubeconfig-access
+
+- 명령어 실행 시 한시적으로 다른 컨텍스트에 명령어 요청
+  - ` kubectl --kubeconfig=<config> get pods `
+- bash 쉘 자동완성
+  - ` echo 'source <(kubectl completion bash)' >> ~/.bashrc `
+- 클러스터 노드들의 IP 주소 확인
+  - ` kubectl get nodes -o wide `
+  - ` kubectl get nodes -o json | jq -r '.items[].status.addresses[] | select(.type=="InternalIP") | .address' `
+
+### kubectl 설정파일 (yaml 포멧)
+- YAML 의 자료형
+  - 주석 : #
+  - 여러파일 구분자 : ---
+  - Scalars(strings/numbers)
+    - ```bash
+      Name: shpark
+      Year: 2021
+      ```
+  - Sequence(arrays/lists)
+    - ```bash
+      MySpecs:
+      - good
+      - better
+      - best
+      ```
+  - Mappings(hashes/dictionaries)
+    - ```bash
+      Score:
+        Math: 100
+        Eng: 90
+      ```
+  - 기본 템플릿
+    - ```bash
+      apiVersion: v1
+      kind: Pod
+      metadata:
+      spec:
+      ```
+### kubectl 명령어 디버깅
+- 로그레벨 변경을 통한 상세 로그 확인
+  - ` kubectl get pods --v=7 `
+    - v=3 : 변경 사항에 대한 확장 정보
+    - v=4 : 디버그 수준 상세화
+    - v=5 : 트레이스 수준 상세화
+    - v=6 : 요청한 리소스 표시
+    - v=7 : HTTP 요청 헤더를 표시
+    - v=8 : HTTP 요청 내용을 표시
+    - v=9 : HTTP 요청 내용을 생략 없이 모두 표시
+
 # 강의자료 소개
 ## 실습
 - 아래 개별 디렉토리 내의 README.txt 참고
 ### 0. role
-- 사용자 계정 생성
-- 서비스 계정 생성
+- 사용자 계정 확인
+  - ` cat ~/.kube/config `
+- 서비스 계정 확인
+  - ` kubectl get serviceaccount `
+  - ` kubectl get serviceaccount default -o yaml `
+  - ` kubectl describe secret default-token-xxxxx `
+
 ### 1. pod
 - 파드 생성 (실제로는 이렇게 배포하지 않음(개념 학습용), 실제로는 deployment 를 사용함)
+- ` README.txt ` 참고
+
 ### 2. replicaset
 - 리플리카셋 생성 (상동)
+
 ### 3. svc
 - 서비스 컨트롤러
+- imperative 명렁어
+  - ```bash
+    kubectl expose deployment nginx-app --type=NodePort
+    kubectl get service
+    kubectl describe service nginx-app
+
+    curl localhost:31000
+    ```
+- 서비스 포트 타입
+  - ClusterIP : 기본 타입이며 클러스터 내에서만 사용 가능 (외부 접속 불가)
+  - NodePort : 모든 노드의 지정된 포트 할당 (외부에서 클러스터 안으로 접속 가능)
+  - LoadBalancer : 퍼블릭 클라우드 또는 로드밸런서 장비가 있는 경우 사용 가능 (External-IP 로 표시)
+  - ExternalName : 클러스터 안에서 외부로 접근할 때 사용 (도메인 주소로 응답)
+
 ### 4. deployment
 - 디프로이먼트 컨트롤러
+- imperative 명령어
+  - ```bash
+    kubectl run nginx-app --image nginx --port=80
+    kubectl get pods
+    kubectl get deployments
+
+    kubectl scale deploy nginx-app --replicas=3
+    kubectl get pods
+    kubectl get deployments
+
+    kubectl edit deployments nginx-app
+
+    kubectl delete pod nginx-app-xxxxxxxx
+    kubectl delete deployments nginx-app
+
+    kubectl set image deploy/nginx-app nginx-app=nginx:1.11
+
+    kubectl rollout history deploy nginx-app
+    kubectl rollout history deploy nginx-app --revision=3
+    kubectl rollout undo deploy nginx-app
+    kubectl rollout undo deploy nginx-app --to-revision=3 
+    kubectl rollout pause deploy/nginx-app
+    kubectl rollout resume deploy/nginx-app
+    ```
+- declarative 명령어
+  - ```bash
+    kubectl create -f nginx-deployment.yml
+    or
+    kubectl apply -f nginx-deployment.yml
+    ```
+
 ### 5. svc_lb
 - 서비스 컨트롤러 (로드밸런싱)
+
 ### 6. volume
 - 볼륨
+
 ### 7. configmap
 - 컨피그맵
+
 ### 8. secret
 - 시크릿
+
 ### 9. network_policy
 - 네트워크
+
+### 10. daemonset
+- 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
+
+### 11. statefulset
+- 상태가 있는 파드들의 관리 (볼륨을 사용해서 특정 데이터를 저장)

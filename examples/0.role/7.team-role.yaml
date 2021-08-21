@@ -1,0 +1,43 @@
+# https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles
+
+# Custom Role Binding
+#  - ClusterRole : cluster-admin, admin, edit, view
+#  - Binding : RoleBinding, ClusterRoleBinding
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: custom-role
+  namespace: team-a
+rules:
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: custom-rolebinding
+  namespace: team-a
+subjects:
+- kind: ServiceAccount
+  name: sa-team-a
+  namespace: team-a
+roleRef:
+  kind: Role
+  name: custom-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Default rolebinding
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: default-rolebinding
+  namespace: team-b
+subjects:
+- kind: ServiceAccount
+  name: sa-team-b
+  namespace: team-b
+roleRef:
+  kind: ClusterRole
+  name: view
+  apiGroup: rbac.authorization.k8s.io

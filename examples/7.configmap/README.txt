@@ -6,3 +6,16 @@ deployment.yaml
 deployment2.yaml
 
 
+# 템플릿
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: default
+data:
+  DB_URL: localhost
+  DB_USER: myuser
+  DB_PASS: mypass
+  DEBUG_INFO: debug
+
+kubectl describe configmap db-config
