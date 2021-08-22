@@ -44,6 +44,7 @@
   - 목록 확인 : ` minikube addons list `
   - 추가 활성화 : ` minikube addons enable dashboard metrics-server `
   - 비활성화 : ` minikube addons disable metrics-server `
+  - 대시보드 접속 : ` minikube dashboard --url `
 
 ## Microk8s
 - 공식가이드
@@ -124,6 +125,8 @@
   - 설정(configmap) : ` configmap = cm `
   - 시크릿(secret) : ` secret `
 
+### kubectl 디버깅
+- 이벤트 상태 로그 : ` kubectl get events `
 
 ### 쿠버네티스 환경 기본 확인
 - 클러스터 확인
@@ -132,7 +135,9 @@
   - ` kubectl config view `
   - https://kubernetes.io/ko/docs/concepts/configuration/organize-cluster-access-kubeconfig/
 
-## 쿠버네티스 설정
+## 쿠버네티스 활용/운영
+- https://kubernetes.io/docs/tutorials/hello-minikube/
+
 ### 헬로월드
 - 기본 서버 배포
   - ` kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10 `
@@ -386,8 +391,11 @@
 ### 9. network_policy
 - 네트워크
 
-### 10. daemonset
-- 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
+### 10. job/cronjob
+- 다중 작업 실행 또는 정해진 날자/시간에 정기적으로 수행하는 파드들의 생성
 
 ### 11. statefulset
 - 상태가 있는 파드들의 관리 (볼륨을 사용해서 특정 데이터를 저장)
+
+### 12. daemonset
+- 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)

@@ -24,6 +24,7 @@ kubectl apply -f mysql.yaml
 
 kubectl get pods
 
+# MySQL 생성 후 계정 생성 (필요 시) - wordpress 버전에 따라 구버전 필요, 신버전 불필요
 kubectl exec -it mysql-xxxxx -- bash
 
 mysql -u root -p

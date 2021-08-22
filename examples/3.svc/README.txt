@@ -9,3 +9,10 @@ kubectl apply -f svc_tomcat1.yaml
 # ClusterIP 사용해서 내부 pods 간에 통신
 kubectl apply -f svc_mysql1.yaml
 
+
+
+# ExternalName 사용해서 클러스터 내부에서 외부에 접속
+kubectl apply -f svc_ext1.yaml
+
+kubectl run -it busybox --rm --image=busybox sh
+> ping my-googledns-svc

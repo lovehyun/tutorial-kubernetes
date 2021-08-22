@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-sts
+spec:
+  serviceName: mysql-svc  # 연결할 서비스
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-sts
+  template:
+    metadata:
+      labels:
+        app: mysql-sts
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: my-pvc
+          mountPath: /var/lib/mysql
+          subPath: data
+        livenessProbe:  # 동작 헬스 체크
+          exec:
+            command: ["mysqladmin", "-p$MYSQL_ROOT_PASSWORD", "ping"]
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+  volumeClaimTemplates:
+  - metadata:
+      name: my-pvc
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: standard  # Minikube/GKE 기본 2Gi 용량
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-svc
+  labels:
+    app: mysql-sts
+spec:
+  ports:
+  - port: 3306
+    name: mysql
+  clusterIP: None  # headless 모드
+  selector:
+    app: mysql-sts  # statefulset 과 연결을 위한 레이블
