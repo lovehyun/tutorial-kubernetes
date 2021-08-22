@@ -5,5 +5,4 @@ metadata:
 data:
   K8S_VERSION_TEST: "kubernetes_version_test1"  # data 하위에 전달할 Key-Value 를 명시
   K8S_CONFIGMAP_TEST: "Kubernetes_configMap_1"  # Key: K8S_CONFIGMAP_TEST, Value: Kubernetes_configMap_1
-  K8S_TEST: "TEST_1"                     # Key: K8S_TEST, Value: TEST_1
-
+  K8S_TEST: "TEST_1"                            # Key: K8S_TEST, Value: TEST_1

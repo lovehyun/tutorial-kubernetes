@@ -4,4 +4,3 @@ kubectl get pods -o wide
 kubectl exec -it mysql-pod -- /bin/bash
 curl 10.244.2.5:8080
 
-

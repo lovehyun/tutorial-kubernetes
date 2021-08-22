@@ -27,7 +27,7 @@ roleRef:
   name: custom-role
   apiGroup: rbac.authorization.k8s.io
 ---
-# Default rolebinding
+# Use default role to bind
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:

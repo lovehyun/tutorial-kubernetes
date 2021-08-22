@@ -8,9 +8,8 @@ spec:
   containers:
   - name: tomcat1
     image: tomcat
- 
+
 ---
- 
 apiVersion: v1
 kind: Pod
 metadata:

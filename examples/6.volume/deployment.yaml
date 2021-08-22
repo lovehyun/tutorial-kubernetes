@@ -19,11 +19,10 @@ spec:
         image: tomcat
         ports:
         - containerPort: 8080
-volumeMounts:                         # Volume object를 Pod에 적용
-- mountPath: /VolumeTest      # Mount 경로 설정
-name: my-volume               # volume name에 해당하는 volume을 pod 에 적용
-   volumes:                              # volume object 를 생성
-- name: my-volume               # volume object 이름을 iksoon-volume으로 설정
-        persistentVolumeClaim:            # PVC를 설정
-          claimName: pvc-hostpath  # PVC이름이 pvc-hostpath 인 volume object를 생성
-
+        volumeMounts:                # Volume object를 Pod에 적용
+        - mountPath: /VolumeTest     # Mount 경로 설정
+          name: my-volume            # volume name에 해당하는 volume을 pod 에 적용
+      volumes:                       # volume object 를 생성
+        - name: my-volume            # volume object 이름을 my-volume으로 설정
+          persistentVolumeClaim:     # PVC를 설정
+            claimName: pvc-hostpath  # PVC이름이 pvc-hostpath 인 volume object를 생성

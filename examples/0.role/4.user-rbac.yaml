@@ -1,23 +1,23 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: read-role
+  name: readonly-role
   namespace: default
 rules:
-- apiGroups: [""]
+- apiGroups: [""]  # "" = Default (Core API Group)
   resources: ["pods"]
   verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: read-rolebinding
+  name: readonly-user-readonly-role-binding
   namespace: default
 subjects:
 - kind: ServiceAccount
-  name: readuser
-  apiGroup: "" # Core API Group
+  name: readonly-user
+  apiGroup: ""  # Core API Group
 roleRef:
   kind: Role
-  name: read-role
+  name: readonly-role
   apiGroup: rbac.authorization.k8s.io

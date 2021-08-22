@@ -8,8 +8,7 @@ spec:
   type: ClusterIP
   ports:
     - name: "mysql-network-setting"
-      port: 4406                   # Service 자신의 포트
-      targetPort: 3306             # pod 내 컨테이너 포트
-  selector:                        # 뒷단의 pod 와 연계
+      port: 4406            # Service 자신의 포트
+      targetPort: 3306      # pod 내 컨테이너 포트
+  selector:                 # 뒷단의 pod 와 연계
     app: mysql
-

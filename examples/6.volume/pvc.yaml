@@ -4,7 +4,7 @@ metadata:
   name: pvc-hostpath
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   volumeMode: Filesystem
   resources:         # PV 자원 중 어느정도의 자원을 사용할 것인지 명시 
     requests:
@@ -15,4 +15,3 @@ spec:
   selector:          # 예제 설명을 위해 추가. PVC는 PV를 selector 를 통해 Label 로 확인할 수도 있음
     matchLabels:     # selector 를 사용하지 않고 storageClassName도 사용하지 않을 시 PVC에서 설정한 스펙의 PV가 있는지 자동으로 탐지하여 PV와 연결됨
       storage: pv-test  
-

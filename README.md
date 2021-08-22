@@ -8,6 +8,8 @@
 
 # 쿠버네티스 설치
 ## K8s original 
+- (생략)
+
 ## Minikube
 - 공식가이드
   - https://v1-18.docs.kubernetes.io/ko/docs/tasks/tools/install-minikube/
@@ -36,6 +38,12 @@
   > minikube ssh
   > docker ps
   ```
+
+### 확장팩 설치
+- Addons 를 통한 추가 기능 활성화
+  - 목록 확인 : ` minikube addons list `
+  - 추가 활성화 : ` minikube addons enable dashboard metrics-server `
+  - 비활성화 : ` minikube addons disable metrics-server `
 
 ## Microk8s
 - 공식가이드

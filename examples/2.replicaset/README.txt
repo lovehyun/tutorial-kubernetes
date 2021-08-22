@@ -3,6 +3,7 @@ kubectl apply -f tomcat.yaml
 
 # tomcat delete
 kubectl delete -f tomcat.yaml
+
 # 또는 수동으로...
 kubectl delete pods tomcat
 

@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: my-pod-mysql
   labels:
-    app: mysql
+    app: mysql  # 원하는 형태의 (key,value) pair, 추후 svc 에서 참조
 spec:
   containers:
   - name: my-cont-mysql

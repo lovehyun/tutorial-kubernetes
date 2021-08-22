@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx-pod
+  labels:
+    app: nginx
+
+spec:
+  containers:
+  - name: my-nginx-cont
+    image: nginx
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nginx-svc
+  labels:
+    app: nginx
+
+spec:
+  type: NodePort
+  ports:
+  - name: my-nginx-nodeport
+    port: 8000
+    targetPort: 80
+  selector:
+    app: nginx  # pod 의 label 명을 통해서 select 함
