@@ -6,6 +6,7 @@
 - Minikube : Single node K8s cluster inside a VM (or docker or host)
 - MicroK8s : Low-ops, light-weight, minimal production K8s (single/multi nodes)
 
+
 # 쿠버네티스 설치
 ## K8s original 
 - (생략)
@@ -50,11 +51,14 @@
 - 공식가이드
   - https://microk8s.io/docs
 
+
 # 쿠버네티스 명령어
 ## kubectl 설치
-### 우부투 snap
+### 우부투 snap 방식
 - 설치 명령어
   - ` snap install kubectl `
+
+### apt 패키지를 통한 설치 방식
 - 공식 사이트
   - https://kubernetes.io/ko/docs/tasks/tools/install-kubectl-linux/
 - 패키지 관리자를 통한 설치
@@ -69,8 +73,8 @@
     - ` sudo apt-get update `
     - ` sudo apt-get install -y kubectl `
 
-### 수동설치 (바이너리)
-- 설칯 명령어
+### 수동설치 (바이너리) 방식
+- 설치 명령어
   - ```bash
     > curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     > curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
@@ -149,7 +153,7 @@
 - 서비스 확인
   - ` kubectl get svc `
 
-- 서비스 접속하기
+- 서비스 접속하기 (맥북에서는 특히 유용함)
   - ` minikube service hello-minikube --url `
 
 - 호스트 포트 포워딩
@@ -308,6 +312,7 @@
     - v=7 : HTTP 요청 헤더를 표시
     - v=8 : HTTP 요청 내용을 표시
     - v=9 : HTTP 요청 내용을 생략 없이 모두 표시
+
 
 # 강의자료 소개
 ## 실습
