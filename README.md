@@ -316,7 +316,7 @@
 
 # 강의자료 소개
 ## 실습
-- 아래 개별 디렉토리 내의 README.txt 참고
+- examples 디렉토리의, 아래 개별 디렉토리 내의 README.txt 참고
 ### 0. role
 - 사용자 계정 확인
   - ` cat ~/.kube/config `
