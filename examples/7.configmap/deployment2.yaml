@@ -26,8 +26,8 @@ spec:
       - name: my-volume              # volume name은 my-volume으로 함
         configMap:                   # volume에 ConfigMap 내용을 적용함
           name: my-configmap         # name: 항목에 configMap 파일의 metadata:name 으로 선택
-            items:                   # configMap 의 data 항목 중에 가져올 key를 선정함 
-            - key: K8S_VERSION       # ConfigMap에 포함되어있는 Key
-              path: K8S_VERSION      # Volume에 저장되는 파일이름
-            - key: K8S_CONFIGMAP     # ConfigMap에 포함되어있는 Key
-              path: K8S_CONFIGMAP    # Volume에 저장되는 파일이름
+          items:                     # configMap 의 data 항목 중에 가져올 key를 선정함 
+          - key: K8S_VERSION_TEST    # ConfigMap에 포함되어있는 Key
+            path: K8S_VERSION        # Volume에 저장되는 파일이름
+          - key: K8S_CONFIGMAP_TEST  # ConfigMap에 포함되어있는 Key
+            path: K8S_CONFIGMAP      # Volume에 저장되는 파일이름

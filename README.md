@@ -143,26 +143,38 @@
 - https://kubernetes.io/docs/tutorials/hello-minikube/
 
 ### 헬로월드
-- 기본 서버 배포
+- 기본 서버 배포 (맥북 M1에서는 해당 컨테이너 이미지가 실행되지 않음)
   - ` kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10 `
   - ` kubectl expose deployment hello-minikube --type=NodePort --port=8080 `
-    
+
 - 기본 배포 컨테이너 확인
-  - ` kubectl get all `
+  - ` kubectl get pod `
+
+- 컨테이너 내에서 직접 접속 확인
+  - ` kubectl exec hello-minikube-xxxxxxxx -- curl localhost:8080 `
 
 - 서비스 확인
   - ` kubectl get svc `
 
-- 서비스 접속하기 (맥북에서는 특히 유용함)
+- 기본 배포 컨테이너 전체 확인
+  - ` kubectl get all `
+
+- 서비스 접속하기 (맥북에서는 특히 유용함 - 노드의 IP가 외부에 노출되지 않음으로)
   - ` minikube service hello-minikube --url `
 
-- 호스트 포트 포워딩
+- 호스트 포트 포워딩 (pod)
   - ` kubectl port-forward hello-minikube-64b64df8c9-4rpfp 8080:8080 `
+
+- 호스트 포트 포워딩 (svc)
+  - ` kubectl port-forward svc/hello-minikube 8080:8080 `
+
+- 배포한 서비스 모두 삭제
+  - ` kubectl delete deploy,svc hello-minikube `
 
 ### 헬로 노드JS #1
 - 컨테이너 pod 형태로 배포 및 서비스 확인
   ```bash
-  > kubectl run nodejs --image=lovehyun/node-web --port=8080 
+  > kubectl run nodejs --image=lovehyun/express-app:1.0 --port=8000 
   pod/nodejs created
   
   > kubectl get pods
@@ -170,28 +182,28 @@
   nodejs         1/1     Running   0          24s
   
   > kubectl logs nodejs
-  Server starting... at nodejs
+  Express is ready at localhost:8000
   
-  > kubectl exec nodejs -- curl 127.0.0.1:8080 --silent
-  Welcome to nodejs
+  > kubectl exec nodejs -- curl 127.0.0.1:8000 --silent
+  Hello Express
   
-  > kubectl expose pod/nodejs --type=NodePort --name nodejs-http
-  service/nodejs exposed
+  > kubectl expose pod/nodejs --type=NodePort --name nodejs-svc
+  service/nodejs-svc exposed
   
   > kubectl get svc
-  nodejs-http   NodePort    10.103.4.59   <none>        8080:32681/TCP   4s
+  nodejs-svcc   NodePort    10.103.4.59   <none>        8080:32681/TCP   4s
 
   > minikube service nodejs-http --url
   http://192.168.49.2:32681
 
   > curl 192.168.49.2:32681
-  Welcome to nodejs
+  Hello Express
   ```
 
 ### 헬로 노드JS #2
 - 컨테이너 deployment 형태로 배포 및 서비스 확인
   ```bash
-  > kubectl create deployment nodejs --image=lovehyun/node-web --port=8080 
+  > kubectl create deployment nodejs --image=lovehyun/express-app:1.1 --port=8000 
   deployment.apps/nodejs created
 
   > kubectl get deployments
@@ -206,20 +218,8 @@
   NAME           		      READY   STATUS    RESTARTS   AGE
   nodejs-775cf96dc5-6qp5k 1/1     Running   0          2m30s
 
-  > kubectl scale deployment/nodejs --replicas=2
-  deployment.apps/nodejs scaled
-  
-  > kubectl get replicasets
-  NAME 		            DESIRED	CURRENT		READY	  AGE
-  nodejs-775cf96dc5   2	   	  2         2	      4m9s
-  
-  > kubectl get pods
-  NAME           		      READY	  STATUS    RESTARTS    AGE
-  nodejs-775cf96dc5-6qp5k 1/1	    Running	  0           4m13s
-  nodejs-775cf96dc5-f6nwl	1/1	    Running	  0	          14s
-
-  > kubectl expose deployment/nodejs --type=NodePort --name nodejs-http
-  service/nodejs-http exposed
+  > kubectl expose deployment/nodejs --type=NodePort --name nodejs-svc
+  service/nodejs-svc exposed
 
   > kubectl get svc
   NAME		TYPE	   CLUSTER-IP	 EXTERNAL-IP	PORT(S)		AGE
@@ -233,10 +233,122 @@
   http://192.168.49.2:30518
 
   > curl 192.168.49.2:30518
-  Welcome to nodejs-775cf96dc5-6qp5k
-  
+  <h2>Welcome to nodejs-775cf96dc5-6qp5k</h2>
+
+  > kubectl scale deployment/nodejs --replicas=2
+  deployment.apps/nodejs scaled
+
+  > kubectl get replicasets
+  NAME 		            DESIRED	CURRENT		READY	  AGE
+  nodejs-775cf96dc5   2	   	  2         2	      4m9s
+
+  > kubectl get pods
+  NAME           		      READY	  STATUS    RESTARTS    AGE
+  nodejs-775cf96dc5-6qp5k 1/1	    Running	  0           4m13s
+  nodejs-775cf96dc5-f6nwl	1/1	    Running	  0	          14s
+
   > curl 192.168.49.2:30518
-  Welcome to nodejs-775cf96dc5-f6nwl
+  <h2>Welcome to nodejs-775cf96dc5-6qp5k</h2>
+
+  > curl 192.168.49.2:30518
+  <h2>Welcome to nodejs-775cf96dc5-f6nwl</h2>
+  ```
+
+- 확인사항 (self-healing)
+  ```bash
+  > kubectl get po -w   (watch)
+  > kubectl delete po nodejs-xxxx
+
+  > kubectl get rs -w   (watch)
+  > kubectl delete rs nodejs-xxxx
+  ```
+
+### 헬로 노드JS #3 - 리소스 업데이트 (롤아웃/롤백)
+- 버전 변경 배포 (1.1 -> 1.2)
+  ```bash
+  > kubectl describe deployment/nodejs | grep Image
+  
+  > kubectl set image deployment/nodejs express-app=lovehyun/express-app:1.2
+
+  # 현 리비전을 포함한 디플로이먼트 이력 출력
+  > kubectl rollout history deployment/nodejs
+  deployment.apps/nodejs
+  REVISION  CHANGE-CAUSE
+  1         <none>
+  2         <none>
+
+  # 이전 디플로이먼트로 롤백 (1.2 -> 1.1)
+  > kubectl rollout undo deployment/nodejs
+  deployment.apps/nodejs rolled back
+
+  > kubectl rollout history deployment/nodejs
+  deployment.apps/nodejs
+  REVISION  CHANGE-CAUSE
+  2         <none>
+  3         <none>
+
+  # 특정 리비전으로 롤백 (1.1 -> 1.2)
+  > kubectl rollout undo deployment/nodejs --to-revision=2
+  deployment.apps/nodejs rolled back
+
+  > kubectl rollout history deployment/nodejs
+  deployment.apps/nodejs
+  REVISION  CHANGE-CAUSE
+  3         <none>
+  4         <none
+
+  # 삭제
+  > kubectl delete deployment/nodejs
+  ```
+
+### 헬로 노드JS #4 - 확장(오토스케일링)
+- HPA (HorizontalPodAutoscaler) 사용해서 확장
+  ```bash
+  > minikube addons enable metrics-server
+
+  > kubectl -n kube-system rollout status deployment metrics-server
+  deployment "metrics-server" successfully rolled out
+
+  > kubectl create deployment nodejs --image=lovehyun/express-app:latest --port=8000
+  deployment.apps/nodejs created
+
+  > kubectl top pods
+  NAME                      CPU(cores)   MEMORY(bytes)
+  nodejs-66c754554d-bc7vz   0m           1Mi
+
+  > kubectl autoscale deployment/nodejs --cpu-percent=50 --min=1 --max=5
+  horizontalpodautoscaler.autoscaling/nodejs autoscaled
+
+  > kubectl get hpa
+  NAME     REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
+  nodejs   Deployment/nodejs   <unknown>/80%   1         5        0          7s
+
+  > kubectl top pods
+  error: Metrics not available for pod default/nodejs-66c754554d-bc7vz, age: 2m12.737349993s
+
+  # 1 core = 1000m, 2 core = 2000m, recommand <100m 
+  > kubectl set resources deployment/nodejs --requests=cpu=50m --limits=cpu=50m,memory=64Mi
+  deployment.apps/nodejs resource requirements updated
+
+  # Jobs 1~3
+  > while true; do curl 192.168.49.2:31410 --silent >/dev/null; done &
+  # 확인 및 중지
+  > jobs
+  > kill %1 %2 %3
+
+  > kubectl get hpa -w
+  NAME     REFERENCE           TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+  nodejs   Deployment/nodejs   0%/80%    1         10        1          19h
+  nodejs   Deployment/nodejs   14%/80%   1         10        1          19h
+  nodejs   Deployment/nodejs   85%/80%   1         10        1          19h
+  nodejs   Deployment/nodejs   92%/80%   1         10        1          19h
+  nodejs   Deployment/nodejs   61%/80%   1         10        2          19h
+  nodejs   Deployment/nodejs   45%/80%   1         10        2          19h
+
+  # Clean-up (모두 삭제)
+  > kubectl delete hpa nodejs
+  > kubectl delete deploy/nodejs
+  > kubectl delete svc/nodejs-svc
   ```
 
 ## 메뉴얼 (한글)
