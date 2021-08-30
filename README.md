@@ -1,6 +1,9 @@
 # 개요
 ## 쿠버네티스란?
 - (생략) 수업 강의자료 참조
+- 또는 공식 홈페이지 참조
+  - https://kubernetes.io/ko/docs/home/
+
 ## 쿠버네티스 유형
 - Kubernetes (K8s) Original
 - Minikube : Single node K8s cluster inside a VM (or docker or host)
@@ -520,6 +523,9 @@
 
 ### 13. daemonset
 - 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
+
+### 20. helm
+- 헬름 차트를 통한 쿠버네티스 패키지 설치
 
 ### demo1
 - wordpress 배포 예제
