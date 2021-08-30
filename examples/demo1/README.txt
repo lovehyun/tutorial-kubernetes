@@ -1,3 +1,9 @@
+# WordPress / MySQL 연결 및 배포
+
+# HPA 실습을 위해서는 metric-service 활성화 필요함
+minikube addons enable metrics-server
+
+
 # Wordpress on K8s
 #                 -> WordPress
 # User -> Service -> WordPress -> MySQL
@@ -23,6 +29,7 @@ kubectl get pv
 kubectl apply -f mysql.yaml
 
 kubectl get pods
+
 
 # MySQL 생성 후 계정 생성 (필요 시) - wordpress 버전에 따라 구버전 필요, 신버전 불필요
 kubectl exec -it mysql-xxxxx -- bash
