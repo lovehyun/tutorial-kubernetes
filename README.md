@@ -505,16 +505,19 @@
 ### 8. secret
 - 시크릿
 
-### 9. network_policy
+### 9. ingress
+- 인그레스 서비스
+
+### 10. network_policy
 - 네트워크
 
 ### 10. job/cronjob
 - 다중 작업 실행 또는 정해진 날자/시간에 정기적으로 수행하는 파드들의 생성
 
-### 11. statefulset
+### 12. statefulset
 - 상태가 있는 파드들의 관리 (볼륨을 사용해서 특정 데이터를 저장)
 
-### 12. daemonset
+### 13. daemonset
 - 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
 
 ### demo1

@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     app: mongo-express
-  type: LoadBalancer
+  type: LoadBalancer  # Minikube 속에서는 결국 NodePort 와 동일함
   ports:
     - protocol: TCP
       port: 8081
