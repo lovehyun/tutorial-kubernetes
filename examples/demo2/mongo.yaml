@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deploy
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo  # dockerhub 에서 필요한 포트/환경변수 참조
+        ports:
+        - containerPort: 27017
+        env:
+        # - name: MONGO_INITDB_ROOT_USERNAME
+        #   value:
+        # - name: MONGO_INITDB_ROOT_PASSWORD
+        #   value:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: root-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: root-password

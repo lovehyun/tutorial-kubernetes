@@ -516,3 +516,9 @@
 
 ### 12. daemonset
 - 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
+
+### demo1
+- wordpress 배포 예제
+
+### demo2
+- mongodb 배포 예제
