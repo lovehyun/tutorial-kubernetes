@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-nginx-tomcat-pods
+#  namespace: default
+spec:
+  containers:
+  - name: my-nginx
+    image: nginx:1.18
+    ports:
+    - containerPort: 80
+  - name: my-tomcat
+    image: tomcat:jdk8-openjdk
+    ports:
+    - containerPort: 8080

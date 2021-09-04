@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-mysql-pod
+  labels:
+    app: mysql  
+spec:
+  containers:
+  - name: my-mysql-cont
+    image: mysql:5.6
+    ports:
+    - containerPort: 3306
+    env:
+    - name: MYSQL_ALLOW_EMPTY_PASSWORD
+      value: "1"
+  # nodeSelector:
+  #   kubernetes.io/hostname: k8s-worker2
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: mysql-svc
+# spec:
+#   type: ClusterIP  # NodePort
+#   ports:
+#   - name: mysql-port
+#     port: 3306
+#     targetPort: 3306
+#     # nodePort: 30001
+#   selector:
+#     app: mysql

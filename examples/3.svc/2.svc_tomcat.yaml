@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-svc-tomcat
+  name: tomcat-svc
   labels:
     name: tomcat8
 spec:
   type: NodePort
   ports:
   - name: my-nodeport-tomcat
-    port: 8888    # 서비스 자신의 포트
+    port: 8888          # 서비스 자신의 포트
     targetPort: 8080    # pod 내 컨테이너 포트
-    nodePort: 30001    # 외부(노드) 포트 - 생략시 자동 할당
+    nodePort: 30001     # 외부(노드) 포트 - 생략시 자동 할당
   selector:
     app: tomcat8

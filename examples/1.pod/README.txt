@@ -1,23 +1,57 @@
 # single container pod
-kubectl exec -it my-pod-tomcat -- /bin/bash
+# create vs apply 차이점 이해하기
+kubectl create -f 1.nginx.yaml
+kubectl apply -f 1.nginx.yaml
 
-# multiple container pod
-kubectl exec -it my-pod-tomcat -c my-cont-tomcat -- /bin/bash
-
-# exit
-# ctrl + p, ctrl + q
 
 # delete
-kubectl delete -f pod_tomcat1.yaml
+kubectl delete -f 1.nginx.yaml
 
-# delete multiple object
+
+# 생성한 pod 에 접속하기
+kubectl apply -f 2.pod_tomcat.yaml
+
+kubectl exec -it my-nginx-pod -- /bin/bash
+kubectl exec -it my-tomcat-pod -- /bin/bash
+
+
+# 환경변수 추가하기
+kubectl apply -f 3.pod_mysql.yaml
+
+
+# 서비스 추가하고 연동하기
+kubectl apply -f 4.svc_mysql.yaml
+
+
+# 파드와 서비스 생성하기 및 서비스 연결
+kubectl apply -f 5.nginx_svc.yaml
+
+kubectl get svc
+
+curl 192.168.49.2:3XXXX
+
+
+# multiple container pod
+kubectl apply -f 6.nginx_tomcat.yaml
+
+kubectl exec -it my-nginx-tomcat-pods -c my-nginx -- /bin/bash
+kubectl exec -it my-nginx-tomcat-pods -c my-tomcat -- /bin/bash
+
+> exit
+> ctrl + p, ctrl + q
+
+
+# delete multiple objects
 kubectl delete pod,service foo bar
 
-# delete multiple object by label
+
+# delete multiple objects by label
 kubectl delete pod,services -l name=myLabel
+
 
 # delete all in namespace
 kubectl delete pod,svc --all -n my-namespace
+
 
 # Pod의 상태값(Status)
 kubectl describe pods
@@ -27,7 +61,9 @@ kubectl describe pods
 - Failed : 오류로 종료
 - Unknown : 통신 불가
 
-# 템플릿
+
+# -----------------------------------------------
+# 템플릿 참고
 apiVersion: v1
 kind: Pod
 metadata:
@@ -62,6 +98,7 @@ spec:
       valueFrom:
         fieldRef:
           fieldPath: status.podIP
+
 
 # pod 에 접속
 kubectl exec -it my-pod sh

@@ -373,6 +373,7 @@
   - ` kubectl config use-context minikube `
   - ` kubectl config current-context `
   - ` kubectl config set-context minikube --namespace=my-namespace `
+  - or (버전에따라) `kubectl config set-context --current --namespace=my-nsmeapce ` 
 - 현재 컨텍스트 보기
   - ` kubectl config view `
 - K8s 클라우드 서비스 접속하기
@@ -389,9 +390,17 @@
   - ` kubectl get nodes -o json | jq -r '.items[].status.addresses[] | select(.type=="InternalIP") | .address' `
 
 ### kubectl 설정파일 (yaml 포멧)
+- https://kubernetes.io/ko/docs/concepts/overview/working-with-objects/kubernetes-objects/
 - YAML 의 자료형
   - 주석 : #
   - 여러파일 구분자 : ---
+  - 기본 템플릿
+    - ```bash
+      apiVersion: v1
+      kind: Pod
+      metadata:
+      spec:
+      ```
   - Scalars(strings/numbers)
     - ```bash
       Name: shpark
@@ -400,9 +409,9 @@
   - Sequence(arrays/lists)
     - ```bash
       MySpecs:
-      - good
-      - better
-      - best
+      - item1
+      - item2
+      - item3
       ```
   - Mappings(hashes/dictionaries)
     - ```bash
@@ -410,13 +419,7 @@
         Math: 100
         Eng: 90
       ```
-  - 기본 템플릿
-    - ```bash
-      apiVersion: v1
-      kind: Pod
-      metadata:
-      spec:
-      ```
+
 ### kubectl 명령어 디버깅
 - 로그레벨 변경을 통한 상세 로그 확인
   - ` kubectl get pods --v=7 `

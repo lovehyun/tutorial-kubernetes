@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-tomcat-pod
+  labels:
+    app: tomcat8 # 원하는 형태의 (key,value) pair, 추후 svc 에서 참조
+spec:
+  containers:
+  - name: my-tomcat-cont
+    image: tomcat:jdk8-openjdk
+    ports:
+    - containerPort: 8080
+  # nodeSelector:
+  #   kubernetes.io/hostname: k8s-worker1
