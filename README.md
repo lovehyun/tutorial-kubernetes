@@ -435,14 +435,6 @@
 # 강의자료 소개
 ## 실습
 - examples 디렉토리의, 아래 개별 디렉토리 내의 README.txt 참고
-### 0. role 
-*보안에 관심이 있는 학생들은 0.role 부터 시작, 그렇지 않으면 1.pod 부터 시작*
-- 사용자 계정 확인
-  - ` cat ~/.kube/config `
-- 서비스 계정 확인
-  - ` kubectl get serviceaccount `
-  - ` kubectl get serviceaccount default -o yaml `
-  - ` kubectl describe secret default-token-xxxxx `
 
 ### 1. pod
 - 파드 생성 (실제로는 이렇게 배포하지 않음(개념 학습용), 실제로는 deployment 를 사용함)
@@ -495,39 +487,48 @@
     ```
 - declarative 명령어
   - ```bash
-    kubectl create -f nginx-deployment.yml
+    kubectl create -f 1.nginx-deployment.yml
     or
-    kubectl apply -f nginx-deployment.yml
+    kubectl apply -f 1.nginx-deployment.yml
     ```
 
 ### 5. svc_lb
 - 서비스 컨트롤러 (로드밸런싱)
 
-### 6. volume
-- 볼륨
-
-### 7. configmap
-- 컨피그맵
-
-### 8. secret
-- 시크릿
-
-### 9. ingress
+### 6. ingress
 - 인그레스 서비스
 
-### 10. network_policy
-- 네트워크
+### 7. volume
+- 볼륨
+
+### 8. configmap
+- 컨피그맵
+
+### 9. secret
+- 시크릿
 
 ### 10. job/cronjob
 - 다중 작업 실행 또는 정해진 날자/시간에 정기적으로 수행하는 파드들의 생성
 
-### 12. statefulset
+### 11. statefulset
 - 상태가 있는 파드들의 관리 (볼륨을 사용해서 특정 데이터를 저장)
 
-### 13. daemonset
+### 12. daemonset
 - 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
 
-### 20. helm
+### 20. role 
+*보안에 관심이 있는 학생들은 0.role 부터 시작, 그렇지 않으면 1.pod 부터 시작*
+- 사용자 계정 확인
+  - ` cat ~/.kube/config `
+- 서비스 계정 확인
+  - ` kubectl get serviceaccount `
+  - ` kubectl get serviceaccount default -o yaml `
+  - ` kubectl describe secret default-token-xxxxx `
+
+### 21. network_policy
+- 네트워크
+
+### 30. helm
 - 헬름 차트를 통한 쿠버네티스 패키지 설치
 
 ### demo1
