@@ -492,9 +492,6 @@
     kubectl apply -f 1.nginx-deployment.yml
     ```
 
-### 5. svc_lb
-- 서비스 컨트롤러 (로드밸런싱)
-
 ### 6. ingress
 - 인그레스 서비스
 

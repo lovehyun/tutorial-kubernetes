@@ -2,13 +2,13 @@ apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   name: tomcat
-  labels:
-    tier: tomcat-rs
+
 spec:
   replicas: 3
   selector:
     matchLabels:
       tier: tomcat
+
   template:
     metadata:
       labels:

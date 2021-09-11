@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-googledns-svc    # 내부 도메인 명 (my-googledns-svc or my-googledns-svc.<namespace>.svc.cluster.local)
+spec:
+  type: ExternalName
+  externalName: dns.google  # 외부 도메인 (8.8.8.8)

@@ -1,26 +1,26 @@
 # single container pod
 # create vs apply 차이점 이해하기
-kubectl create -f 1.nginx.yaml
-kubectl apply -f 1.nginx.yaml
+kubectl create -f 1.nginx_pod.yaml
+kubectl apply -f 1.nginx_pod.yaml
 
 
 # delete
-kubectl delete -f 1.nginx.yaml
+kubectl delete -f 1.nginx_pod.yaml
 
 
 # 생성한 pod 에 접속하기
-kubectl apply -f 2.pod_tomcat.yaml
+kubectl apply -f 2.tomcat_pod.yaml
 
 kubectl exec -it my-nginx-pod -- /bin/bash
 kubectl exec -it my-tomcat-pod -- /bin/bash
 
 
 # 환경변수 추가하기
-kubectl apply -f 3.pod_mysql.yaml
+kubectl apply -f 3.mysql_pod.yaml
 
 
 # 서비스 추가하고 연동하기
-kubectl apply -f 4.svc_mysql.yaml
+kubectl apply -f 4.mysql_svc.yaml
 
 
 # 파드와 서비스 생성하기 및 서비스 연결
@@ -83,7 +83,7 @@ spec:
         memory: 1G
     ports:
     - containerPort: 8000
-    envs:
+    env:
     - name: MY-ENV1
       value: "my-value1"
     - name: HOSTNAME
