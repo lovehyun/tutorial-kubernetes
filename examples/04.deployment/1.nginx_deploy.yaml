@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx-deploy
 spec:
   selector:
     matchLabels:
-      app: nginx
+      app: nginx   # 아래 생성될 파드의 레이블
   replicas: 2
   template:
     metadata:
@@ -21,11 +21,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: nginx-svc
 spec:
   type: LoadBalancer
   selector:
-    app: nginx
+    app: nginx   # 위 생성된 파드의 레이블
   ports:
   - port: 80
     name: http
