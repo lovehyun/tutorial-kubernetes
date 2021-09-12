@@ -1,3 +1,5 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/workloads/controllers/replicaset/
+
 # replicaset
 label 을 pod에 설정하고, selector 를 통해서 분산처리 할 리소스 레이블과 연결함
 

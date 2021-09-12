@@ -1,3 +1,5 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/workloads/controllers/statefulset/
+
 # MySQL 스테이트풀셋 생성
 kubectl apply -f mysql_sts.yaml
 

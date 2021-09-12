@@ -1,3 +1,5 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/workloads/controllers/deployment/
+
 # nginx 의 deployment
 kubectl apply -f 1.nginx_deploy.yaml
 

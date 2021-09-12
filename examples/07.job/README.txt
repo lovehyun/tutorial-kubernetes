@@ -1,3 +1,6 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/workloads/controllers/job/
+#       https://kubernetes.io/ko/docs/concepts/workloads/controllers/cron-jobs/
+
 # 동시 잡 수행
 kubectl apply -f job.yaml
 

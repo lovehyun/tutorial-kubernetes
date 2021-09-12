@@ -22,12 +22,13 @@ kubectl describe secret readonly-user-token-qsx66
 
 kubectl config set-credentials readonly-user --token=xxxxxxxxxx
 
+
+# 컨텍스트 전환
 kubectl config get-contexts
 kubectl config set-context readonly-user-context --cluster=minikube --user=readonly-user
 kubectl config get-contexts
 
 kubectl config use-context readonly-user-context
-
 
 
 # 삭제
