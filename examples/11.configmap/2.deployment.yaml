@@ -19,10 +19,10 @@ spec:
         image: tomcat
         ports:
         - containerPort: 8080
-        env:                         # env : 항목을 추가 해서 configmap 설정을 적용함
-        - name: VERSION_TEST         # - name : 해당 Pod 에 적용될 환경변수 이름 
-          valueFrom:                 # valueFrom : name에서 명시한 환경변수에 적용할 값을 설정함
-            configMapKeyRef:         # configMapKeyRef : 불러올 configMap과 key를 선택
+        env:                         # env: 항목을 추가 해서 configmap 설정을 적용함
+        - name: VERSION_TEST         # - name: 해당 Pod 에 적용될 환경변수 이름 
+          valueFrom:                 # valueFrom: name에서 명시한 환경변수에 적용할 값을 설정함
+            configMapKeyRef:         # configMapKeyRef: 불러올 configMap과 key를 선택
               name: my-configmap     # name: 항목에 configMap 파일의 metadata: name 으로 선택
               key: K8S_VERSION_TEST  # key: 항목에 configMap 에 설정되어있는 data의 key 이름 선택
         - name: K8S_CONFIGMAP

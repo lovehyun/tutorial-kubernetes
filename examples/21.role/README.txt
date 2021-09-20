@@ -1,3 +1,9 @@
+# 현재 계정 확인
+kubectl config view
+cat ~/.kube/config
+
+
+
 # 서비스 계정 생성
 kubectl create -f 1.serviceaccount-admin.yaml
 kubectl describe secret lovehyun-admin-token-xxxx -n kube-system

@@ -1,0 +1,27 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: readonly-role
+  namespace: default
+rules:
+- apiGroups: [""]   # "" = Default (Core API Group - v1)
+  # resources: ["pods", "services"]
+  resources: ["*"]
+  verbs: ["get", "list"]
+- apiGroups: ["apps"]   # "" = Default (Apps API Group - apps/v1)
+  resources: ["*"]
+  verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: readonly-rolebind
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: readonly-user
+roleRef:
+  kind: Role
+  name: readonly-role
+  apiGroup: rbac.authorization.k8s.io
