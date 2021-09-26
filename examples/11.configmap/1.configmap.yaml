@@ -2,6 +2,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-configmap
-data:                                # data 하위에 전달할 (Key,Value) 를 명시
-  K8S_VERSION_TEST: "MY_VERSION_1"   # Key: K8S_VERSION_TEST, Value: MY_VERSION_1
-  K8S_CONFIGMAP_TEST: "MY_CONFIG_1"  # Key: K8S_CONFIGMAP_TEST, Value: MY_CONFIG_1
+data:                              # data 하위에 전달할 (Key,Value) 를 명시
+  MY_VERSION: "MY_VERSION_1.0.0"   # Key: MY_VERSION, Value: MY_VERSION_1.0.0
+  MY_CONFIG: "MY_CONFIG_123"       # Key: MY_CONFIG, Value: MY_CONFIG_123

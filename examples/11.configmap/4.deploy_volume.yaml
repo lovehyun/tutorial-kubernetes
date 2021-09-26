@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    app: my-tomcat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-pod
+  template:
+    metadata:
+      labels:
+        app: my-pod
+    spec:
+      containers:
+      - name: my-tomcat
+        image: tomcat
+        ports:
+        - containerPort: 8080
+        volumeMounts:                 # pod에 mount할 volume을 설정
+        - name: my-volume             # name이 my-volume인 volume을 mount
+          mountPath: /tmp/my-config   # mount할 경로 설정
+      volumes:                        # volume 설정
+      - name: my-volume               # volume name은 위와 일치하도록 my-volume으로 함
+        configMap:                    # volume에 ConfigMap 내용을 적용함
+          name: my-configmap          # name: 항목에 configMap 파일의 metadata:name 으로 선택
+          # items:                      # configMap 의 data 항목 중에 가져올 key를 선정함 (여기서부터는 Optional - 추가 안하면 ALL)
+          # - key: MY_VERSION           # ConfigMap에 포함되어있는 Key
+          #   path: filename1           # Volume에 저장되는 파일이름
+          # - key: MY_CONFIG            # ConfigMap에 포함되어있는 Key
+          #   path: filename2           # Volume에 저장되는 파일이름
