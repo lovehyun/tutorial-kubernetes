@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret-ssh
+type: kubernetes.io/ssh-auth
+data:
+  # 본 예시를 위해 축약된 데이터임
+  ssh-privatekey: |
+          MIIEpQIBAAKCAQEAulqb/Y ...

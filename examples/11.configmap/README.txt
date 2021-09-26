@@ -1,3 +1,5 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/configuration/configmap/
+
 # configmap 설정 후, 변수로 가져오는 예시와
 deployment.yaml
 

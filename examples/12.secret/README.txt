@@ -1,3 +1,5 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/configuration/secret/
+
 # 사용자 계정/암호 기반으로 secret 생성
 kubectl apply -f user-pass.yaml
 
@@ -69,4 +71,22 @@ spec:
 
 # 시크릿 데이터 저장 용량
 최대 1MB, etcd에 비 암호화 상태의 text로 저장 됨
+
+
+
+# 그 외 커맨드 라인 활용...
+
+## 도커 레지스크리 시크릿
+kubectl create secret docker-registry secret-tiger-docker \
+  --docker-username=tiger \
+  --docker-password=pass113 \
+  --docker-email=tiger@acme.com
+
+## TLS 시크릿
+kubectl create secret tls my-tls-secret \
+  --cert=path/to/cert/file \
+  --key=path/to/key/file
+  
+## SSH 키 시크릿
+kubectl create secret generic ssh-key-secret --from-file=ssh-privatekey=/path/to/.ssh/id_rsa --from-file=ssh-publickey=/path/to/.ssh/id_rsa.pub
 

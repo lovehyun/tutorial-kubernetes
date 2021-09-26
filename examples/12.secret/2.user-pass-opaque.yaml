@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: my-secret
+  name: my-secret-opaque
 type: Opaque           # 기본값: (key,value) 형식으로 임의의 데이터 설정
 data:
-  username: dXNlcg==
+  username: dXNlcg==   # base64
   password: cGFzcw==

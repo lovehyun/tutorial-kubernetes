@@ -1,3 +1,7 @@
+# 참고 : https://kubernetes.io/ko/docs/concepts/configuration/organize-cluster-access-kubeconfig/
+# 참고 : https://kubernetes.io/ko/docs/reference/access-authn-authz/authorization/
+
+
 # 현재 계정 확인
 kubectl config view
 cat ~/.kube/config
