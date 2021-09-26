@@ -15,11 +15,20 @@
   - 3.0 에서는 배포만 하는 간단한 바이너리로 동작 함
 
 ## 설치
-- helm 설치
+- helm 설치 (수동)
   ```bash
   > curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
   > chmod 700 get_helm.sh
   > ./get_helm.sh
+  ```
+- helm 설치 (패키지)
+  ```bash
+  # MacOS
+  > brew install kubernetes-helm
+  # 우분투
+  > sudo snap install helm --classic
+  # 윈도우
+  > choco install kubernetes-helm
   ```
 - 헬름 차트 파일 구조
   - 예제 myapp
@@ -42,6 +51,25 @@
     - ` helm search mysql `
     - ` helm inspect stable/mariadb `
 
+  - 응용 예제) mysql 설치
+    ```bash
+    helm install stable/mysql --name=my-mysql
+
+    # 설치 후 비밀번호 알아오기
+    MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace default my-mysql -o jsonppath="{.data.mysql-root-password}" | base64 --decode; echo)
+
+    # 접속하기 #1 (호스트에서)
+    MYSQL_HOST=127.0.0.1
+    MYSQL_PORT=3306
+    kubectl port-forward svc/my-mysql 3306
+    mysql -h ${MYSQL_HOSt} -P ${MYSQL_PORT} -u root -p ${MYSQL_ROOT_PASSWORD}
+
+    # 접속하기 #2 (새로운 파드 생성해서 그곳을 통해 DB에 접속)
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+    apt update && apt install mysql-client -y
+    mysql -h my-mysql -p
+    ```
+
 - 헬름 챠트 설치 : ` helm install <chartname> `
   - 예제) 
     - ` helm install stable/mariadb `
@@ -57,3 +85,34 @@
     image: myapp                          image: myapp
     version: 1.0.0     version: 2.0.0     version: 2.0.0
     ```
+
+- 헬름 차트 만들기
+  - ` helm create sample `
+  - 디렉토리 구조 확인하고 내용 수정 : ` tree sample `
+    ```bash
+    tree sample
+    sample
+    ├── Chart.yaml
+    ├── charts
+    ├── templates
+    │   ├── NOTES.txt
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── service.yaml
+    │   ├── serviceaccount.yaml
+    │   └── tests
+    │       └── test-connection.yaml
+    └── values.yaml
+
+    3 directories, 10 files
+    ```
+
+- 헬름 차트 수정하기
+  - ` helm fetch stable/mysql `
+  - ` tar xvfz mysql-1.x.x.tar `
+  - ` tree mysql `
+  - ` # 내용 수정 : mysql/mysql/values.yaml 및 mysql/Chart.yaml 의 verion 등 `
+  - ` helm install ./mysql `
+  - ` helm ls `
