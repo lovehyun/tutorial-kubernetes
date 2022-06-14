@@ -196,7 +196,7 @@
   > kubectl get svc
   nodejs-svcc   NodePort    10.103.4.59   <none>        8080:32681/TCP   4s
 
-  > minikube service nodejs-http --url
+  > minikube service nodejs-svc --url
   http://192.168.49.2:32681
 
   > curl 192.168.49.2:32681
@@ -225,14 +225,14 @@
   service/nodejs-svc exposed
 
   > kubectl get svc
-  NAME		TYPE	   CLUSTER-IP	 EXTERNAL-IP	PORT(S)		AGE
-  nodejs-http	NodePort   10.97.135.189  <none>         8080:30518/TCP   4s
+  NAME		    TYPE	     CLUSTER-IP	    EXTERNAL-IP	   PORT(S)		      AGE
+  nodejs-svc	NodePort   10.97.135.189  <none>         8080:30518/TCP   4s
 
   > kubectl get nodes -o wide
   NAME        STATUS   ROLES                  AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
   minikube    Ready    control-plane,master   5d    v1.21.2   192.168.49.2   <none>        Ubuntu 20.04.2 LTS   5.11.0-25-generic   docker://20.10.7
 
-  > minikube service nodejs-http --url
+  > minikube service nodejs-svc --url
   http://192.168.49.2:30518
 
   > curl 192.168.49.2:30518
@@ -306,6 +306,11 @@
 
 ### 헬로 노드JS #4 - 확장(오토스케일링)
 - HPA (HorizontalPodAutoscaler) 사용해서 확장
+  metric-server 동작하지 않을 경우 (kubectl top pods)
+  ```bash
+  > minikube start --extra-config=kubelet.housekeeping-interval=10s
+  ```
+
   ```bash
   > minikube addons enable metrics-server
 
@@ -315,16 +320,23 @@
   > kubectl create deployment nodejs --image=lovehyun/express-app:latest --port=8000
   deployment.apps/nodejs created
 
+  > kubectl expose deployment/nodejs --type=NodePort --name nodejs-svc
+  service/nodejs-svc exposed
+
+  > kubectl get svc
+  NAME		    TYPE	     CLUSTER-IP	    EXTERNAL-IP	   PORT(S)		      AGE
+  nodejs-svc	NodePort   10.97.135.189  <none>         8080:30518/TCP   4s
+
   > kubectl top pods
   NAME                      CPU(cores)   MEMORY(bytes)
   nodejs-66c754554d-bc7vz   0m           1Mi
 
-  > kubectl autoscale deployment/nodejs --cpu-percent=50 --min=1 --max=5
+  > kubectl autoscale deployment/nodejs --cpu-percent=70 --min=1 --max=5
   horizontalpodautoscaler.autoscaling/nodejs autoscaled
 
   > kubectl get hpa
-  NAME     REFERENCE           TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
-  nodejs   Deployment/nodejs   <unknown>/80%   1         5        0          7s
+  NAME     REFERENCE           TARGETS         MINPODS   MAXPODS  REPLICAS   AGE
+  nodejs   Deployment/nodejs   <unknown>/70%   1         5        0          7s
 
   > kubectl top pods
   error: Metrics not available for pod default/nodejs-66c754554d-bc7vz, age: 2m12.737349993s
@@ -341,12 +353,12 @@
 
   > kubectl get hpa -w
   NAME     REFERENCE           TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
-  nodejs   Deployment/nodejs   0%/80%    1         10        1          19h
-  nodejs   Deployment/nodejs   14%/80%   1         10        1          19h
-  nodejs   Deployment/nodejs   85%/80%   1         10        1          19h
-  nodejs   Deployment/nodejs   92%/80%   1         10        1          19h
-  nodejs   Deployment/nodejs   61%/80%   1         10        2          19h
-  nodejs   Deployment/nodejs   45%/80%   1         10        2          19h
+  nodejs   Deployment/nodejs   0%/70%    1         10        1          19h
+  nodejs   Deployment/nodejs   14%/70%   1         10        1          19h
+  nodejs   Deployment/nodejs   85%/70%   1         10        1          19h
+  nodejs   Deployment/nodejs   92%/70%   1         10        1          19h
+  nodejs   Deployment/nodejs   61%/70%   1         10        2          19h
+  nodejs   Deployment/nodejs   45%/70%   1         10        2          19h
 
   # Clean-up (모두 삭제)
   > kubectl delete hpa nodejs

@@ -1,0 +1,176 @@
+# 수동 설치
+
+git clone https://github.com/kubernetes/charts
+cd charts/stable
+
+vi values.yaml
+119번째줄 type: ClusterIP -> NodePort
+포트 원하면 아래 targetPort:3000 아래에 nodePort:30007 써도 됨
+
+254번째줄 adminUser: admin, adminPassword: ******
+암호 설정하고 설치...
+
+helm install grafana --create-namespace --namespace grafana stable/grafana -f values.yaml
+
+helm delete grfana --namespace grafana stable/grfana
+
+
+# 설치후 접속
+nodeport 위에 설정한것으로 접속해서...
+data sources -> add data source -> prometheus 선택하고 주소 입력...
+http://prometheus-server.prometheus.svc.cluster.local
+
+내 상황에서는...
+http://monitor-prometheus-server.monitor.svc.cluster.local
+추가하고...
++ Create 아래에서 Import 에서... 템플릿 추가하기
+
+https://grafana.com/grafana/dashboards 가면 다양한 탬플릿 있음..
+Name 에다가 kubernetes 선택하고 아래아래아래 필터에서 Downloads 선택하면 많이 다운로드 하는것 있음..
+
+그거 골라다 보고 ID 값을 고르면 됨...
+11454 이런 ID 값...
+
+가장 많이 사용하는 디폴트는 1621 대시보드...
+
+
+
+===============================================
+
+# 정보 가져오기..
+
+# 모든 node 에는 kubelet 이 설치되어 있고, 그 kubelet 에는 cadvisor 를 갖고 있음.
+
+# 1. 메뉴얼로 키를 사용하여 정보 가져오기
+
+sudo curl https://localhost:10250/metrics -k --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key
+
+sudo curl https://localhost:10250/stats/summary -k cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key
+
+
+# 2. SA 를 생성하여 해당 token 으로 kubelet https 인증
+
+참고 : https://kubernetes.io/ko/docs/concepts/cluster-administration/system-metrics/
+
+[SA 생성 명령어]
+
+kubectl create sa kubelet-api-test
+kubectl create clusterrolebinding kubelet-api-test --clusterrole=system:kubelet-api-admin -- serviceaccount=default:kubelet-api-test
+
+SECRET=$(kubectl get secrets | grep kubelet-api-test | awk '{print $1}')
+TOKEN=$(kubectl describe secret ${SECRET} | grep -E '^token' | awk '{print $2}')
+
+echo ${TOKEN}
+
+[이제 SA 토큰을 사용한 curl]
+curl -Ssk --header "Authorization: Bearer ${TOKEN}" https://localhost:10250/metrics
+curl -Ssk --header "Authorization: Bearer ${TOKEN}" https://localhost:10250/stats/summary
+
+
+# 그 이후 다른 경로들...
+
+/metrics
+/metrics/cadvisor
+/metrics/resource
+/metrics/probes
+
+
+내부 가져올수 있는 정보들...
+https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md
+
+각종 네트워크 정보는 pod 내의 pause 컨테이너의 정보...
+
+TYPE container_network_receive_bytes_total counter
+
+cadvisor 에서 container_network_tcp_usage_total, udp 정보를 enable 하는 방법
+https://github.com/google/cadvisor/issues/2380
+
+
+
+
+===============================================
+
+https://gruuuuu.github.io/cloud/l-helm-basic/#
+
+1. 헬름 설치
+$ curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
+
+2. 리포 추가
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+3. 차트 목록 출력
+$ helm search repo stable
+
+4. 차트 업데이트
+$ helm repo update
+
+5. 프로메테우스 설치
+$ helm install monitor stable/prometheus
+
+6. 확인
+$ kubectl get pod
+
+몇개는 Pending 상태... k8s클러스터에 StorageClass가 정의되어 있지 않기 때문.. 그래서 일단 pv 를 false 로 emptydir 사용하도록
+
+6-1. yaml 로 해결
+$ helm inspect values stable/prometheus
+
+persistentVolume:
+  enabled: true 
+
+되어 있는 부분 확인하고...
+
+vim volumeF.yaml 로 새로 하나 만들기
+alertmanager:
+    persistentVolume:
+        enabled: false
+server:  
+    persistentVolume:
+        enabled: false
+pushgateway: 
+    persistentVolume:
+        enabled: false
+
+$ helm upgrade -f volumeF.yaml monitor stable/prometheus
+
+6-2. 커맨드로 해결...
+
+helm install monitor stable/prometheus --set alertmanager.persistentVolume.enabled=false --set server.persistentVolume.enabled=false --set pushgateway.persistentVolume.enabled=false
+
+7. 웹으로 접속
+$ kubectl get svc
+
+근데 monitor-prometheus-server 가 clusterip 라서 접속할곳이 없으니... 이걸 수정해서 nodeport 로 변경
+
+$ kubectl edit svc monitor-prometheus-server (맨 아래쪽 쯤 spec.type 을 변경)
+
+$ kubectl get svc
+다시 해보면 NodePort 로 바껴서 포트 포워딩 된 포트가 보임
+이제 ip:port(31557)/graph 로 접속
+
+
+
+==================================
+
+grafana 설치하기
+
+https://dev.to/reoring/deploy-prometheus-grafana-to-kubernetes-by-helm-3-1485
+
+1. 리포 추가 (상동)
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+
+2. Prom-Operator 설치
+$ helm install my-prometheus-operator stable/prometheus-operator
+
+3. Show Pods
+$ kubectl --namespace default get pods -l "release=my-prometheus-operator"
+
+4. Show Grafana UI
+$ kubectl port-forward $(kubectl get pods --selector=app=grafana --output=jsonpath="{.items..metadata.name}") 3000
+
+끝나면 브라우저에서 열기 http://localhost:3000/
+계정 정보는 admin/prom-operator
+
+
