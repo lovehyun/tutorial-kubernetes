@@ -21,13 +21,21 @@
   - 주의 : PC환경에 따라 아키텍처 다른 것 받아야 함
   - x86-64 기준
     ```bash
+    1.18.0 특정 버전
+    > curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.18.0/minikube-linux-amd64
+
+    최신 버전 (v1.22.0 등)
     > curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 && chmod +x minikube
     
     > sudo mkdir -p /usr/local/bin/
     > sudo install minikube /usr/local/bin/
     ```
+  - MAC 기준
+    ```bash
+    > curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 && chmod +x minikube
+    ```
 - 실행
-  - 시작 (도커 설치 시, 기본 드라이버 = docker, 그 외 qemu, ssh 등)
+  - 시작 (도커 설치 시, 기본 드라이버 = docker, 그 외 none, qemu, ssh 등)
     - ` minikube start --driver=<driver_name> `
   - 상태
     - ` minikube status `
@@ -42,11 +50,16 @@
   > minikube ssh
   > docker ps
   ```
+- 설치환경 참고사항
+  - 리눅스에 설치 시 : 호스트와 동일한 레벨
+  - MAC에 설치 시 : HyperKit 아래 FreeBSD 에 설치
+  - 윈도우에 설치 시 : HyperV 아래 Ubuntu 에 설치 (WSL의 경우) - 또는 VirtualBox 아래 우분투
 
 ### 확장팩 설치
 - Addons 를 통한 추가 기능 활성화
   - 목록 확인 : ` minikube addons list `
-  - 추가 활성화 : ` minikube addons enable dashboard metrics-server `
+  - 추가 활성화1 : ` minikube addons enable dashboard `
+  - 추가 활성화2 : ` minikube addons enable metrics-server `
   - 비활성화 : ` minikube addons disable metrics-server `
   - 대시보드 접속 : ` minikube dashboard --url `
 
@@ -201,6 +214,8 @@
 
   > curl 192.168.49.2:32681
   Hello Express
+
+  > VSCode 사용 시 포트포워딩 추가 (192.168.49.2:32681 <- localhost:32681) 후 웹브라우저에서 확인
   ```
 
 ### 헬로 노드JS #2
@@ -255,6 +270,8 @@
 
   > curl 192.168.49.2:30518
   <h2>Welcome to nodejs-775cf96dc5-f6nwl</h2>
+
+  > VSCode 사용 시 포트포워딩 추가 (192.168.49.2:30518 <- localhost:30518) 후 웹브라우저에서 확인
   ```
 
 - 확인사항 (self-healing)
@@ -448,16 +465,16 @@
 ## 실습
 - examples 디렉토리의, 아래 개별 디렉토리 내의 README.txt 참고
 
-### 1. pod
+### 01. pod
 - 파드 생성 (실제로는 이렇게 배포하지 않음(개념 학습용), 실제로는 deployment 를 사용함)
 - ` README.txt ` 참고
 
-### 2. replicaset
+### 02. replicaset
 - 리플리카셋 생성 (상동)
 
-### 3. svc
+### 03. svc
 - 서비스 컨트롤러
-- imperative 명렁어
+- imperative 명렁어 (deploy/rs/pod 등 다양하게 expose 가능)
   - ```bash
     kubectl expose deployment nginx-app --type=NodePort
     kubectl get service
@@ -471,7 +488,7 @@
   - LoadBalancer : 퍼블릭 클라우드 또는 로드밸런서 장비가 있는 경우 사용 가능 (External-IP 로 표시)
   - ExternalName : 클러스터 안에서 외부로 접근할 때 사용 (도메인 주소로 응답)
 
-### 4. deployment
+### 04. deployment
 - 디프로이먼트 컨트롤러
 - imperative 명령어
   - ```bash
@@ -504,29 +521,35 @@
     kubectl apply -f 1.nginx-deployment.yml
     ```
 
-### 6. ingress
+### 05. ingress
 - 인그레스 서비스
 
-### 7. volume
-- 볼륨
-
-### 8. configmap
-- 컨피그맵
-
-### 9. secret
-- 시크릿
-
-### 10. job/cronjob
-- 다중 작업 실행 또는 정해진 날자/시간에 정기적으로 수행하는 파드들의 생성
-
-### 11. statefulset
+### 06. statefulset
+- 상태관리 서비스
 - 상태가 있는 파드들의 관리 (볼륨을 사용해서 특정 데이터를 저장)
 
-### 12. daemonset
+### 07. daemonset
+- 노드별 서비스
 - 클러스터 내 모든 노드에 파드 배포 (예, 모니터링 / 로그 수집 등)
 
-### 20. role 
-*보안에 관심이 있는 학생들은 0.role 부터 시작, 그렇지 않으면 1.pod 부터 시작*
+### 08. job
+- job 및 cronob
+- 다중 작업 실행 또는 정해진 날자/시간에 정기적으로 수행하는 파드들의 생성
+
+### 10. volume
+- 볼륨
+
+### 11. configmap
+- 컨피그맵
+
+### 12. secret
+- 시크릿
+
+### 20. namespace
+- 작업공간 관리
+*보안에 관심이 있는 학생들은 20.namespace 부터 시작, 그렇지 않으면 1.pod 부터 시작*
+
+### 21. role 
 - 사용자 계정 확인
   - ` cat ~/.kube/config `
 - 서비스 계정 확인
