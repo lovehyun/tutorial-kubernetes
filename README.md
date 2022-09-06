@@ -37,6 +37,12 @@
 - 실행
   - 시작 (도커 설치 시, 기본 드라이버 = docker, 그 외 none, qemu, ssh 등)
     - ` minikube start --driver=<driver_name> `
+  - 메모리 증설 후 시작
+    - ```bash
+      minikube stop
+      minikube start --cpus 2 --memory 4096
+      (또는 시작 전 설정파일 생성) minikube config set memory 4096
+      ```
   - 상태
     - ` minikube status `
   - 중지(종료)
