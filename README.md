@@ -165,30 +165,30 @@
 - https://kubernetes.io/docs/tutorials/hello-minikube/
 
 ### 헬로월드
-- 기본 서버 배포 (맥북 M1에서는 해당 컨테이너 이미지가 실행되지 않음)
+- 기본 서버 배포 (맥북 M1에서는 해당 컨테이너 이미지가 실행되지 않음 - 이미지 빌드 아키텍처 차이)
   - ` kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10 `
   - ` kubectl expose deployment hello-minikube --type=NodePort --port=8080 `
 
-- 기본 배포 컨테이너 확인
-  - ` kubectl get pod `
+- 배포된 내용 확인
+  - 기본 배포 컨테이너 확인
+    - ` kubectl get pod `
 
-- 컨테이너 내에서 직접 접속 확인
-  - ` kubectl exec hello-minikube-xxxxxxxx -- curl localhost:8080 `
+  - 컨테이너 내에서 직접 접속 확인
+    - ` kubectl exec hello-minikube-xxxxxxxx -- curl localhost:8080 `
 
-- 서비스 확인
-  - ` kubectl get svc `
+  - 서비스 확인
+    - ` kubectl get svc `
 
-- 기본 배포 컨테이너 전체 확인
-  - ` kubectl get all `
+  - 기본 배포 컨테이너 전체 확인
+    - ` kubectl get all `
 
-- 서비스 접속하기 (맥북에서는 특히 유용함 - 노드의 IP가 외부에 노출되지 않음으로)
-  - ` minikube service hello-minikube --url `
-
-- 호스트 포트 포워딩 (pod)
-  - ` kubectl port-forward hello-minikube-64b64df8c9-4rpfp 8080:8080 `
-
-- 호스트 포트 포워딩 (svc)
-  - ` kubectl port-forward svc/hello-minikube 8080:8080 `
+- 서비스 접속을 위한 다양한 인터페이스
+  1. 서비스 접속하기 (맥북에서는 특히 유용함 - 노드의 IP가 외부에 노출되지 않음으로)
+     - ` minikube service hello-minikube --url `
+  2. 호스트 포트 포워딩 (pod)
+     - ` kubectl port-forward hello-minikube-64b64df8c9-4rpfp 8080:8080 `
+  3. 호스트 포트 포워딩 (svc)
+     - ` kubectl port-forward svc/hello-minikube 8080:8080 `
 
 - 배포한 서비스 모두 삭제
   - ` kubectl delete deploy,svc hello-minikube `
