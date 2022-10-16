@@ -172,13 +172,10 @@
 - 배포된 내용 확인
   - 기본 배포 컨테이너 확인
     - ` kubectl get pod `
-
   - 컨테이너 내에서 직접 접속 확인
     - ` kubectl exec hello-minikube-xxxxxxxx -- curl localhost:8080 `
-
   - 서비스 확인
     - ` kubectl get svc `
-
   - 기본 배포 컨테이너 전체 확인
     - ` kubectl get all `
 
