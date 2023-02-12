@@ -96,13 +96,29 @@
     - ` sudo apt-get install -y kubectl `
 
 ### 수동설치 (바이너리) 방식
-- 설치 명령어
+- 설치 명령어 (최신버전)
   - ```bash
     > curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
     > curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
     > echo "$(<kubectl.sha256) kubectl" | sha256sum --check
     > sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
     ```
+- 설치 명령어 (특정버전 - OLD)
+  - ```bash
+    > curl -LO https://dl.k8s.io/release/v1.20.0/bin/linux/amd64/kubectl
+    > curl -LO https://dl.k8s.io/release/v1.22.0/bin/linux/amd64/kubectl
+    > curl -LO https://dl.k8s.io/release/v1.26.0/bin/linux/amd64/kubectl
+    > sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    ```
+
+## 설치관련 각종 이슈
+- 쿠버네티스 (및 minikube) 는 지속적으로 버전이 올라가고 있으며, 다양한 이슈들이 해결되고는 있음. 매우 빠르게 변화하는 소프트웨어 중 하나임.
+- 따라서, 버전에 따른 다양한 동작 차이가 발생 할 수 있으며, 커널 버전 (리눅스/우분투) 등과도 미스매치가 있으면 이슈가 발생 할 수 있으며, minikube 버전과 kubectl 버전이 너무 차이가 많이 있을 경우에도 각종 문제가 발생 할 수 있음. (따라서 실습 환경을 해당 시점에서 잘 맞추어야 함)
+- kubectl get pods -A 통해서 모든 서비스 데몬 정상인지 확인 (crashLoopBackOff 없어야 함)
+- 예) Minikube v1.18 과 Ubuntu 16.04 는 큰 이슈가 없었으나, Ubuntu 20.04 에서는 kernel 버전이 올라가며 nf_conntrack_max 설정 관련 이슈가 있음. 
+  - 임시 방편으로는 sudo sysctl net/netfilter/nf_conntrack_max=131072 로 설정해두고 minikube 를 실행하여 해결 (부팅시 자동 적용은 /etc/sysctl.conf),
+  - 또는 kubectl edit configmap kube-proxy --namespace=kube-system 를 통해 maxPerCore 를 null -> 0 으로 변경해서 해결, 
+  - 또는 최신 버전의 minikube 로 업그레이드 해야 한다.
 
 ## kubectl 사용법 (명령어)
 - https://kubernetes.io/ko/docs/reference/kubectl/cheatsheet/
