@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-apps
+  template:
+    metadata:
+      labels:
+        app: my-apps
+    spec:
+      containers:
+      - name: app-green
+        image: lovehyun/flask-app:1.2
+        ports:
+        - containerPort: 5000
+        env:
+        - name: APP_COLOR
+          value: green
