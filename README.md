@@ -37,12 +37,19 @@
 - 실행
   - 시작 (도커 설치 시, 기본 드라이버 = docker, 그 외 none, qemu, ssh 등)
     - ` minikube start --driver=<driver_name> `
-  - 메모리 증설 후 시작
-    - ```bash
-      minikube stop
-      minikube start --cpus 2 --memory 4096
-      (또는 시작 전 설정파일 생성) minikube config set memory 4096
-      ```
+  - 고급 옵션
+    - 메모리 증설 후 시작
+      - ```bash
+        minikube stop
+        minikube start --cpus 2 --memory 4096
+        (또는 시작 전 설정파일 생성) minikube config set memory 4096
+        ```
+    - 멀티 노트로 시작
+      - ```bash
+        minikube start --nodes 2 -p multinode
+        minikube status -p multinode
+        (-p 옵션은 프로파일 신규 생성으로 옵셔널 필드임)
+        ```
   - 상태
     - ` minikube status `
   - 중지(종료)
