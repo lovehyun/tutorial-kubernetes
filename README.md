@@ -39,17 +39,24 @@
     - ` minikube start --driver=<driver_name> `
   - 고급 옵션
     - 메모리 증설 후 시작
-      - ```bash
-        minikube stop
-        minikube start --cpus 2 --memory 4096
-        (또는 시작 전 설정파일 생성) minikube config set memory 4096
-        ```
+      ```bash
+      minikube stop
+      minikube start --cpus 2 --memory 4096
+      (또는 시작 전 설정파일 생성) minikube config set memory 4096
+      ```
     - 멀티 노트로 시작
-      - ```bash
-        minikube start --nodes 2 -p multinode
-        minikube status -p multinode
-        (-p 옵션은 프로파일 신규 생성으로 옵셔널 필드임)
-        ```
+      ```bash
+      minikube start --nodes 2 -p multinode
+      minikube status -p multinode
+      (-p 옵션은 프로파일 신규 생성으로 옵셔널 필드임)
+      ```
+    - 다른 사용자 계정으로부터 현재 노드에 접속
+      ```bash
+      minikube kubectl -- config view --flatten > minikube-config
+      # 클라이언트 노드
+      mkdir -p /home/$USER/.kube
+      cp minikube-config /home/$USER/.kube/config
+      ```
   - 상태
     - ` minikube status `
   - 중지(종료)
